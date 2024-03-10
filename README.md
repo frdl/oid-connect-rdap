@@ -1,3 +1,10 @@
+# OID-Connect RDAP
+RDAP look ups extended by [OID-Connect](https://registry.frdl.de/?goto=oid%3A1.3.6.1.4.1.37553.8.1.8.1.33061) protocols.
+
+OID-Connect RDAP Client (Whois via RDAP)
+
+ **Forked from...:**
+
 # RDAP CLIENT
 
 RDAP Client For PHP (Formerly Whois via http protocol)
