@@ -35,13 +35,28 @@ class Client implements RdapClientInterface
 {
     const VERSION = '1.0.0';
 
-    final const PROTOCOLS = [
+    const PROTOCOLS = [
         self::IPV4 => IPv4Protocol::class,
         self::IPV6 => IPv6Protocol::class,
         self::ASN => AsnProtocol::class,
         self::DOMAIN => DomainProtocol::class,
         self::NS => NsProtocol::class,
+        self::OID => OidProtocol::class,
+        self::WEID => WeidProtocol::class,
+        self::HANDLE => HandleProtocol::class, // XXXX-ZZZZ  or registrant@provider.tld
+        self::ANY => UnboundProtocol::class,
+        //1.3.6.1.4.1.37553.8.1.8.1.33061 ...        
+        self::CONNECT => ConnectProtocol::class,      
+
+     
+        self::ORSPLUS => DnsOrsPlusProtocol::class,  
+    
+        self::API => OidMinusProtocol::class,
     ];
+
+    /* example DNS records ORS+
+weid.info TXT oid.zone=1.3.6.1.4.1.37553.8.8.7 weid:1-8-1-PID-RDAP-2@rdap.frdlweb.de weid:1-8-1-PID-REGISTRY-RDAP-6@registry.frdl.de weid:1-8-1-PID-0@weid.info root.oid.zone:1.3.6.1.4.1 weid:1-8-1-PID-PROVIDER-4@1.3.6.1.4.1.37553 weid:1-8-1-PID-REGISTRAR-7@1.3.6.1.4.1.37553.8.8 weid:1-8-1-PID-REGISTRY-4@x.weid.info weid:pen:SX0-U-8@registry.frdl.de ap:weid@webfan.de ap:webfan@inne.city mail:co@weid.info weid:1-8-1-PID-NODE-6@:weid-consortium.frdlweb.de weid:1-8-1-PID-CARA-6@Frdlweb
+    */
 
     /**
      * @var array<class-string<RdapProtocolInterface>|RdapProtocolInterface>
