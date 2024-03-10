@@ -1,6 +1,6 @@
 {
-    "name": "arrayaccess/rdap-client",
-    "description": "Php - Registration Data Access Protocol (RDAP) Client",
+    "name": "frdl/oid-connect-rdap",
+    "description": "OID-Connect RDAP Client (Whois via RDAP)",
     "license": ["GPL-3.0-or-later"],
     "keywords": [
         "rdap",
@@ -9,25 +9,34 @@
         "rdap-php",
         "asn",
         "ip",
-        "nameserver"
+        "nameserver",
+        "oid",
+        "weid",
+        "oid-connect"
     ],
     "require": {
         "php": ">= 8.1",
+        "frdlweb/frdlweb-composer-plugin": "*",
         "ext-intl": "*",
         "ext-json": "*"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.7.2",
-        "slevomat/coding-standard": "^8.13"
+        "slevomat/coding-standard": "^8.13",
+        "gbxyz/rdap-bootstrap-server" : "*"
+    },       
+    "provide": {
+        "arrayaccess/rdap-client" : "*"
     },
     "config": {
         "allow-plugins": {
-            "dealerdirect/phpcodesniffer-composer-installer": true
+          "dealerdirect/phpcodesniffer-composer-installer": true
         }
     },
     "autoload": {
         "psr-4": {
-            "ArrayAccess\\RdapClient\\" : "src/"
+            "ArrayAccess\\RdapClient\\" : "src/",            
+            "Webfan\\RDAPClient\\" : "src/webfan/"
         }
     }
 }
