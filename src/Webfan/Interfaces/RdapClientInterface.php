@@ -33,7 +33,7 @@ interface RdapClientInterface
     const NODE = 'node';  //oid:1.3.6.1.4.1.37553.8.1.8.1.33061.1104674 (oid-meta,subordinate: oid-node, oid-webfingers)
     const SERVICE = 'service'; //oid:1.3.6.1.4.1.37553.8.1.8.1.33061.61843251614 (oid-service)
 
-
+    const REGISTRY = 'registry';
     const RA = 'ra';
   /*  RA is oneOf   (property/type)
            oid:1.3.6.1.4.1.37553.8.1.8.1.33061.2019381338979
