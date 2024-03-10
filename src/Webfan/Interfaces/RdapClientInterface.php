@@ -16,7 +16,7 @@ interface RdapClientInterface
     const CONNECT = 'connect';  //oid:1.3.6.1.4.1.37553.8.1.8.1.33061  ....
     //const ORSPLUS = 'dns-query';
     const ORSPLUS = 'dnsors';
-
+  const APPS = 'apps';
    const API = 'api';
    const DATA = 'data';
     const ROOT_RDAP = 'bootstrap'; //oid:1.3.6.1.4.1.37553.8.1.8.1.33061.1276945 (oid-rdap)
