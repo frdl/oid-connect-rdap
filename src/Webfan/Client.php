@@ -57,7 +57,16 @@ class Client implements RdapClientInterface
     /* example DNS records ORS+
 weid.info TXT oid.zone=1.3.6.1.4.1.37553.8.8.7 weid:1-8-1-PID-RDAP-2@rdap.frdlweb.de weid:1-8-1-PID-REGISTRY-RDAP-6@registry.frdl.de weid:1-8-1-PID-0@weid.info root.oid.zone:1.3.6.1.4.1 weid:1-8-1-PID-PROVIDER-4@1.3.6.1.4.1.37553 weid:1-8-1-PID-REGISTRAR-7@1.3.6.1.4.1.37553.8.8 weid:1-8-1-PID-REGISTRY-4@x.weid.info weid:pen:SX0-U-8@registry.frdl.de ap:weid@webfan.de ap:webfan@inne.city mail:co@weid.info weid:1-8-1-PID-NODE-6@:weid-consortium.frdlweb.de weid:1-8-1-PID-CARA-6@Frdlweb
     */
+    public function oid(string $target): ?Interfaces\RdapRequestInterface
+    {
+        return $this->request($target, self::OID);
+    }
+    public function connect(string $target): ?Interfaces\RdapRequestInterface
+    {
+        return $this->request($target, self::CONNECT);
+    }
 
+    
     /**
      * @var array<class-string<RdapProtocolInterface>|RdapProtocolInterface>
      */
