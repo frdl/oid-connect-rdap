@@ -5,12 +5,17 @@ namespace Webfan\RDAPClient;
 
 
 use Webfan\RDAPClient\Protocols\OIDProtocol;
+use Webfan\RDAPClient\Protocols;
 
 use ArrayAccess\RdapClient\Exceptions\EmptyArgumentException;
 use ArrayAccess\RdapClient\Exceptions\InvalidServiceDefinitionException;
 use ArrayAccess\RdapClient\Exceptions\UnsupportedProtocolException;
 use ArrayAccess\RdapClient\Interfaces\RdapClientInterface;
-use ArrayAccess\RdapClient\Interfaces\RdapProtocolInterface;
+
+//use ArrayAccess\RdapClient\Interfaces\RdapProtocolInterface;
+use Webfan\RdapClient\Interfaces\RdapProtocolInterface;
+use Webfan\RdapClient\Interfaces;
+
 use ArrayAccess\RdapClient\Protocols\AsnProtocol;
 use ArrayAccess\RdapClient\Protocols\DomainProtocol;
 use ArrayAccess\RdapClient\Protocols\IPv4Protocol;
@@ -41,22 +46,48 @@ class Client implements RdapClientInterface
         self::ASN => AsnProtocol::class,
         self::DOMAIN => DomainProtocol::class,
         self::NS => NsProtocol::class,
+    
         self::OID => OidProtocol::class,
-        self::WEID => WeidProtocol::class,
+        self::WEID => WeidToOidProtocol::class,
         self::HANDLE => HandleProtocol::class, // XXXX-ZZZZ  or registrant@provider.tld
-        self::ANY => UnboundProtocol::class,
+        self::ANY => UnboundOrLocalIdentifiersProtocol::class,
         //1.3.6.1.4.1.37553.8.1.8.1.33061 ...        
         self::CONNECT => ConnectProtocol::class,      
 
      
-        self::ORSPLUS => DnsOrsPlusProtocol::class,  
-    
-        self::API => OidMinusProtocol::class,
-    ];
-
+        self::ORSPLUS => DnsOrsPlusProtocol::class, 
     /* example DNS records ORS+
 weid.info TXT oid.zone=1.3.6.1.4.1.37553.8.8.7 weid:1-8-1-PID-RDAP-2@rdap.frdlweb.de weid:1-8-1-PID-REGISTRY-RDAP-6@registry.frdl.de weid:1-8-1-PID-0@weid.info root.oid.zone:1.3.6.1.4.1 weid:1-8-1-PID-PROVIDER-4@1.3.6.1.4.1.37553 weid:1-8-1-PID-REGISTRAR-7@1.3.6.1.4.1.37553.8.8 weid:1-8-1-PID-REGISTRY-4@x.weid.info weid:pen:SX0-U-8@registry.frdl.de ap:weid@webfan.de ap:webfan@inne.city mail:co@weid.info weid:1-8-1-PID-NODE-6@:weid-consortium.frdlweb.de weid:1-8-1-PID-CARA-6@Frdlweb
     */
+    
+        self::REGISTRY => FederatedRegistriesRelayProtocol::class,
+        self::APPS => SoftwareAndProductsRegistryProtocol::class,
+        self::API => OidMinusProtocol::class,
+        self::DATA => DataApiProtocol::class,
+    
+        self::ROOT_RDAP => RdapBootstrapProtocol::class, 
+        self::CARA =>  CoAccreditedOidRegistrarProtocol::class,
+
+    
+        self::NODE =>  WellKnownWebfingersRelayProtocol::class,
+    
+        self::SERVICE => ServiceProviderEndpointRegistryProtocol::class,
+        self::RA => OidWhoisDataProtocol::class,
+      /*  RA is oneOf   (property/type)
+           oid:1.3.6.1.4.1.37553.8.1.8.1.33061.2019381338979
+             (oid-provider)
+           oid:1.3.6.1.4.1.37553.8.1.8.1.33061.2147306420158
+             (oid-registry)
+            oid:1.3.6.1.4.1.37553.8.1.8.1.33061.77303031124851
+              (oid-registrar)
+           oid:1.3.6.1.4.1.37553.8.1.8.1.33061.2782909120494521
+              (oid-registrant)
+*/  
+    ];
+
+
+    
+
     public function oid(string $target): ?Interfaces\RdapRequestInterface
     {
         return $this->request($target, self::OID);
