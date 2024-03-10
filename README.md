@@ -3,7 +3,7 @@ RDAP look ups extended by [OID-Connect](https://registry.frdl.de/?goto=oid%3A1.3
 
 OID-Connect RDAP Client (Whois via RDAP)
 
- **Forked from...:**
+ **Forked from [ArrayAccess/RDAPClient](https://github.com/ArrayAccess/RDAP-Client)**
 
 # RDAP CLIENT
 
