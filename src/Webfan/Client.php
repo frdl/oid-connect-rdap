@@ -14,7 +14,7 @@ use ArrayAccess\RdapClient\Exceptions\UnsupportedProtocolException;
 
 //use ArrayAccess\RdapClient\Interfaces\RdapProtocolInterface;
 use Interfaces\RdapProtocolInterface;
-use Interfaces;
+use Interfaces\RdapClientInterface;
 
 use ArrayAccess\RdapClient\Protocols\AsnProtocol;
 use ArrayAccess\RdapClient\Protocols\DomainProtocol;
