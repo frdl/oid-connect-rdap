@@ -4,17 +4,17 @@ declare(strict_types=1);
 namespace Webfan\RDAPClient;
 
 
-use Webfan\RDAPClient\Protocols\OIDProtocol;
-use Webfan\RDAPClient\Protocols;
+use Webfan\RDAPClient\Protocols\OidProtocol;
+use Protocols;
 
 use ArrayAccess\RdapClient\Exceptions\EmptyArgumentException;
 use ArrayAccess\RdapClient\Exceptions\InvalidServiceDefinitionException;
 use ArrayAccess\RdapClient\Exceptions\UnsupportedProtocolException;
-use ArrayAccess\RdapClient\Interfaces\RdapClientInterface;
+//use ArrayAccess\RdapClient\Interfaces\RdapClientInterface;
 
 //use ArrayAccess\RdapClient\Interfaces\RdapProtocolInterface;
-use Webfan\RdapClient\Interfaces\RdapProtocolInterface;
-use Webfan\RdapClient\Interfaces;
+use Interfaces\RdapProtocolInterface;
+use Interfaces;
 
 use ArrayAccess\RdapClient\Protocols\AsnProtocol;
 use ArrayAccess\RdapClient\Protocols\DomainProtocol;
@@ -87,15 +87,6 @@ weid.info TXT oid.zone=1.3.6.1.4.1.37553.8.8.7 weid:1-8-1-PID-RDAP-2@rdap.frdlwe
 
 
     
-
-    public function oid(string $target): ?Interfaces\RdapRequestInterface
-    {
-        return $this->request($target, self::OID);
-    }
-    public function connect(string $target): ?Interfaces\RdapRequestInterface
-    {
-        return $this->request($target, self::CONNECT);
-    }
 
     
     /**
