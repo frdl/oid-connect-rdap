@@ -5,16 +5,18 @@ namespace Webfan\RDAPClient;
 
 
 use Webfan\RDAPClient\Protocols\OidProtocol;
-use Protocols;
+use Webfan\RDAPClient\Protocols;
 
 use ArrayAccess\RdapClient\Exceptions\EmptyArgumentException;
 use ArrayAccess\RdapClient\Exceptions\InvalidServiceDefinitionException;
 use ArrayAccess\RdapClient\Exceptions\UnsupportedProtocolException;
 //use ArrayAccess\RdapClient\Interfaces\RdapClientInterface;
+use ArrayAccess\RdapClient\Interfaces\RdapRequestInterface;
+
 
 //use ArrayAccess\RdapClient\Interfaces\RdapProtocolInterface;
-use Interfaces\RdapProtocolInterface;
-use Interfaces\RdapClientInterface;
+use Webfan\RDAPClient\Interfaces\RdapProtocolInterface;
+use Webfan\RDAPClient\Interfaces\RdapClientInterface;
 
 use ArrayAccess\RdapClient\Protocols\AsnProtocol;
 use ArrayAccess\RdapClient\Protocols\DomainProtocol;
@@ -189,7 +191,7 @@ weid.info TXT oid.zone=1.3.6.1.4.1.37553.8.8.7 weid:1-8-1-PID-RDAP-2@rdap.frdlwe
         return [self::DOMAIN, $target];
     }
 
-    public function request(string|int $target, ?string $protocol = null): ?Interfaces\RdapRequestInterface
+    public function request(string|int $target, ?string $protocol = null): ?RdapRequestInterface
     {
         if (is_int($target)) {
             $target = (string) $target;
@@ -219,27 +221,27 @@ weid.info TXT oid.zone=1.3.6.1.4.1.37553.8.8.7 weid:1-8-1-PID-RDAP-2@rdap.frdlwe
         return $object->find($target);
     }
 
-    public function domain(string $target): ?Interfaces\RdapRequestInterface
+    public function domain(string $target): ?RdapRequestInterface
     {
         return $this->request($target, self::DOMAIN);
     }
 
-    public function asn(string|int $target): ?Interfaces\RdapRequestInterface
+    public function asn(string|int $target): ?RdapRequestInterface
     {
         return $this->request($target, self::ASN);
     }
 
-    public function ipv4(string $target): ?Interfaces\RdapRequestInterface
+    public function ipv4(string $target): ?RdapRequestInterface
     {
         return $this->request($target, self::IPV4);
     }
 
-    public function ipv6(string $target): ?Interfaces\RdapRequestInterface
+    public function ipv6(string $target): ?RdapRequestInterface
     {
         return $this->request($target, self::IPV6);
     }
 
-    public function nameserver(string $target): ?Interfaces\RdapRequestInterface
+    public function nameserver(string $target): ?RdapRequestInterface
     {
         return $this->request($target, self::NS);
     }
