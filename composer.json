@@ -1,7 +1,7 @@
 {
     "name": "frdl/oid-connect-rdap",
     "description": "OID-Connect RDAP Client (Whois via RDAP)",
-    "license": ["GPL-3.0-or-later"],
+    "license": ["GPL-3.0-or-later", "MIT"],
     "keywords": [
         "rdap",
         "whois",
@@ -30,7 +30,14 @@
     },
     "config": {
         "allow-plugins": {
-          "dealerdirect/phpcodesniffer-composer-installer": true
+          "dealerdirect/phpcodesniffer-composer-installer": true,            			
+            "airmad/*": true,
+			"civicrm/*": true,
+			"composer/*": true,
+			"frdl/*": true,
+			"webfan3/*": true,
+			"kylekatarnls/update-helper": true,
+			"smoren/mushroom-hook-manage" :true
         }
     },
     "autoload": {
