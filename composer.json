@@ -43,7 +43,7 @@
     "autoload": {
         "psr-4": {
             "ArrayAccess\\RdapClient\\" : "src/",            
-            "Webfan\\RDAPClient\\" : "src/webfan/"
+            "Webfan\\RDAPClient\\" : "src/Webfan/"
         }
     }
 }
