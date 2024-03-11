@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace ArrayAccess\RdapClient\Interfaces;
+namespace Webfan\RdapClient\Interfaces;
 
 interface RdapProtocolInterface
 {
