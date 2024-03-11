@@ -12,6 +12,11 @@ interface RdapProtocolInterface
 
     const NS_URI = self::DOMAIN_URI;
 
+    const OBJECT_TAGS_URI = 'https://data.iana.org/rdap/object-tags.json';
+
+    const OID_URI = 'https://oid.zone/rdap/data/oid.json';
+    const BOOTSTRAP_URI_TEMPLATE = 'https://%s/%s/%s';
+
     public function __construct(RdapClientInterface $client);
 
     public function getName() : string;
