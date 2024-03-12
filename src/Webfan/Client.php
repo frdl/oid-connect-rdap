@@ -39,7 +39,7 @@ use function strlen;
 use function strtolower;
 use function trim;
 
-class Client implements RdapClientInterface, \ArrayAccess\RdapClient\Interfaces\RdapClientInterface
+class Client implements \ArrayAccess\RdapClient\Interfaces\RdapClientInterface// RdapClientInterface,
 {
     const VERSION = '1.0.0';
 
