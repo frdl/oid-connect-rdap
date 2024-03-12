@@ -254,4 +254,17 @@ class Client implements RdapClientInterface, ArrayAccessRdapClientInterface
     {
         return $this->request($target, self::NS);
     }
+
+
+    
+
+    public function oid(string $target): ?RdapRequestInterface
+    {
+        return $this->request($target, self::OID);
+    }    
+
+    public function connect(string $target): ?RdapRequestInterface
+    {
+        return $this->request($target, self::CONNECT);
+    }
 }
