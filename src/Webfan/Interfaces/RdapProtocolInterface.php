@@ -3,7 +3,11 @@ declare(strict_types=1);
 
 namespace Webfan\RDAPClient\Interfaces;
 
-use ArrayAccess\RdapClient\Interfaces;
+use Webfan\RDAPClient\Interfaces\RdapClientInterface;
+
+use ArrayAccess\RdapClient\Interfaces\RdapServiceInterface;
+use ArrayAccess\RdapClient\Interfaces\RdapRequestInterface;
+use ArrayAccess\RdapClient\Interfaces\RdapResponseInterface;
 
 interface RdapProtocolInterface
 {
@@ -17,7 +21,7 @@ interface RdapProtocolInterface
     const OBJECT_TAGS_URI = 'https://data.iana.org/rdap/object-tags.json';
 
     const OID_URI = 'https://oid.zone/rdap/data/oid.json';
-    const BOOTSTRAP_URI_TEMPLATE = 'https://%s/%s/%s';
+    const BOOTSTRAP_URI = 'https://oid.zone/rdap/bootstrap/%s/%s';
 
     public function __construct(RdapClientInterface $client);
 
