@@ -50,7 +50,7 @@ class ConnectProtocol extends AbstractRdapProtocol
      */
     public function getSearchPath(): string
     {
-        return '/oid';
+        return '/connect';
     }
 
     public function createResponse(string $response, RdapRequestInterface $request): RdapResponseInterface
