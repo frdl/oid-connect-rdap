@@ -14,7 +14,7 @@ use ArrayAccess\RdapClient\Exceptions\UnsupportedProtocolException;
 //use ArrayAccess\RdapClient\Interfaces\RdapClientInterface;
 use ArrayAccess\RdapClient\Interfaces\RdapRequestInterface;
 
-use ArrayAccess\RdapClient\Interfaces\RdapClientInterface as ArrayAccessRdapClientInterface;
+//use ArrayAccess\RdapClient\Interfaces\RdapClientInterface as ArrayAccessRdapClientInterface;
 //use ArrayAccess\RdapClient\Interfaces\RdapProtocolInterface;
 use Webfan\RDAPClient\Interfaces\RdapProtocolInterface;
 use Webfan\RDAPClient\Interfaces\RdapClientInterface;
@@ -39,7 +39,7 @@ use function strlen;
 use function strtolower;
 use function trim;
 
-class Client implements RdapClientInterface, ArrayAccessRdapClientInterface
+class Client implements RdapClientInterface
 {
     const VERSION = '1.0.0';
 
