@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Webfan\RDAPClient\Interfaces;
 
-interface RdapClientInterface
+interface RdapClientInterface extends \ArrayAccess\RdapClient\Interfaces\RdapClientInterface
 {
   
     const IPV4 = 'ipv4';
