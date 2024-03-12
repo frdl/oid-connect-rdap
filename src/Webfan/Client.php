@@ -5,7 +5,8 @@ namespace Webfan\RDAPClient;
 
 
 use Webfan\RDAPClient\Protocols\OidProtocol;
-use Webfan\RDAPClient\Protocols;
+use Webfan\RDAPClient\Protocols\ConnectProtocol;
+//use Webfan\RDAPClient\Protocols;
 
 use ArrayAccess\RdapClient\Exceptions\EmptyArgumentException;
 use ArrayAccess\RdapClient\Exceptions\InvalidServiceDefinitionException;
@@ -50,17 +51,24 @@ class Client implements RdapClientInterface, ArrayAccessRdapClientInterface
         self::NS => NsProtocol::class,
     
         self::OID => OidProtocol::class,
-        self::WEID => WeidToOidProtocol::class,
-        self::HANDLE => HandleProtocol::class, // XXXX-ZZZZ  or registrant@provider.tld
-        self::ANY => UnboundOrLocalIdentifiersProtocol::class,
+
         //1.3.6.1.4.1.37553.8.1.8.1.33061 ...        
         self::CONNECT => ConnectProtocol::class,      
 
-     
-        self::ORSPLUS => DnsOrsPlusProtocol::class, 
+      
     /* example DNS records ORS+
-weid.info TXT oid.zone=1.3.6.1.4.1.37553.8.8.7 weid:1-8-1-PID-RDAP-2@rdap.frdlweb.de weid:1-8-1-PID-REGISTRY-RDAP-6@registry.frdl.de weid:1-8-1-PID-0@weid.info root.oid.zone:1.3.6.1.4.1 weid:1-8-1-PID-PROVIDER-4@1.3.6.1.4.1.37553 weid:1-8-1-PID-REGISTRAR-7@1.3.6.1.4.1.37553.8.8 weid:1-8-1-PID-REGISTRY-4@x.weid.info weid:pen:SX0-U-8@registry.frdl.de ap:weid@webfan.de ap:webfan@inne.city mail:co@weid.info weid:1-8-1-PID-NODE-6@:weid-consortium.frdlweb.de weid:1-8-1-PID-CARA-6@Frdlweb
-    */
+
+   rdap=rdap.frdlweb.de pid:1.3.6.1.4.1.37553.8.8.7 ra:1.3.6.1.4.1.37553 connect:weid.info
+   
+   
+        self::ORSPLUS => DnsOrsPlusProtocol::class, 
+
+    
+    
+        self::WEID => WeidToOidProtocol::class,
+        self::HANDLE => HandleProtocol::class, // XXXX-ZZZZ  or registrant@provider.tld
+        self::ANY => UnboundOrLocalIdentifiersProtocol::class,
+
     
         self::REGISTRY => FederatedRegistriesRelayProtocol::class,
         self::APPS => SoftwareAndProductsRegistryProtocol::class,
@@ -75,6 +83,7 @@ weid.info TXT oid.zone=1.3.6.1.4.1.37553.8.8.7 weid:1-8-1-PID-RDAP-2@rdap.frdlwe
     
         self::SERVICE => ServiceProviderEndpointRegistryProtocol::class,
         self::RA => OidWhoisDataProtocol::class,
+         */ 
       /*  RA is oneOf   (property/type)
            oid:1.3.6.1.4.1.37553.8.1.8.1.33061.2019381338979
              (oid-provider)
