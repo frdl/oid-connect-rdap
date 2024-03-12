@@ -6,12 +6,6 @@ namespace Webfan\RDAPClient\Interfaces;
 interface RdapClientInterface
 {
   
-    const IPV4 = 'ipv4';
-    const IPV6 = 'ipv46';
-    const DOMAIN = 'domain';
-    const NS = 'ns';
-    const ASN = 'asn';
-  
     const OID = 'oid';
     const CONNECT = 'connect';  //oid:1.3.6.1.4.1.37553.8.1.8.1.33061  ....
   /*
