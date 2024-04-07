@@ -1,5 +1,7 @@
 <?php declare(strict_types=1);
 
+namespace Webfan\RDAP;
+
 use Metaregistrar\RDAP\Responses\RdapAsnResponse;
 use Metaregistrar\RDAP\Responses\RdapIpResponse;
 use Metaregistrar\RDAP\Responses\RdapResponse;
@@ -19,7 +21,12 @@ class Rdap extends BaseRdapClient {
     public const HOME   = 'home'; 
 */
   
-    public const DOMAIN = 'oid';
+    public const OID = 'oid';
+    public const PEN = 'iana-pen';
+    public const CARA = 'cara';
+    public const SERVICE = 'service';
+    public const NODE = 'node';
+    public const HANDLE = '@';
   
     protected static $protocols = [
         'ipv4'   => [self::HOME => 'https://data.iana.org/rdap/ipv4.json', self::SEARCH => 'ip/'],
@@ -27,7 +34,12 @@ class Rdap extends BaseRdapClient {
         'ns'     => [self::HOME => 'https://data.iana.org/rdap/dns.json', self::SEARCH => 'nameserver/'],
         'ipv6'   => [self::HOME => 'https://data.iana.org/rdap/ipv6.json', self::SEARCH => 'ip/'],
         'asn'    => [self::HOME => 'https://data.iana.org/rdap/asn.json', self::SEARCH => 'autnum/'],
-        'oid'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'oid/']
+        'oid'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'oid/'],
+        'iana-pen'    => [self::HOME => 'https://iana-pen.oid.zone/rdap/data/iana-pen.json', self::SEARCH => 'iana-pen/'],
+        'cara'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'cara/'],
+        'service'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'service/'],
+        'node'    => [self::HOME => 'https://iana-pen.oid.zone/rdap/data/oid.json', self::SEARCH => 'node/'],
+        '@'    => [self::HOME => 'https://iana-pen.oid.zone/rdap/data/oid.json', self::SEARCH => '.well-known/webfinger?resource=']
     ];
 
     private $protocol;
@@ -43,10 +55,12 @@ class Rdap extends BaseRdapClient {
      * @throws \Metaregistrar\RDAP\RdapException
      */
     public function __construct(string $protocol) {
-        if (($protocol !== self::ASN) && ($protocol !== self::IPV4) && ($protocol !== self::IPV6) && ($protocol !== self::DOMAIN)) {
+    //    if (($protocol !== self::ASN) && ($protocol !== self::IPV4) && ($protocol !== self::IPV6) && ($protocol !== self::DOMAIN)) {
+    //        throw new RdapException('Protocol ' . $protocol . ' is not recognized by this rdap client implementation');
+    //    }
+        if (!isset(self::$protocols[$protocol])) {
             throw new RdapException('Protocol ' . $protocol . ' is not recognized by this rdap client implementation');
         }
-
         $this->protocol = $protocol;
     }
 
@@ -65,7 +79,10 @@ class Rdap extends BaseRdapClient {
         }
 
         $search = trim($search);
-        if ((!is_string($search)) && in_array($this->getProtocol(), [self::DOMAIN, self::NS, self::IPV4, self::IPV6], true)) {
+        if ($this->getProtocol() !== self::ASN && (!is_string($search)) && in_array($this->getProtocol(), [
+              self::DOMAIN, self::NS, self::IPV4, self::IPV6, self::OID, self::PEN,
+              self::CARA, self::SERVICE, self::NODE, self::HANDLE
+                                                                                    ], true)) {
             throw new RdapException('Search parameter must be a string for ipv4, ipv6, domain or nameserver searches');
         }
 
