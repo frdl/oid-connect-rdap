@@ -8,8 +8,6 @@ use Metaregistrar\RDAP\Responses\RdapResponse;
 
 use Metaregistrar\RDAP\RdapException;
 use Metaregistrar\RDAP\Rdap as BaseRdapClient;
-use Metaregistrar\RDAP;
-
 class Rdap extends BaseRdapClient {
   /*
     public const ASN    = 'asn';
