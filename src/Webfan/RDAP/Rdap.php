@@ -8,8 +8,17 @@ use Metaregistrar\RDAP\Responses\RdapResponse;
 
 use Metaregistrar\RDAP\RdapException;
 use Metaregistrar\RDAP\Rdap as BaseRdapClient;
-class Rdap extends BaseRdapClient {
-  /*
+use Metaregistrar\RDAP\Responses\RdapAsnResponse;
+use Metaregistrar\RDAP\Responses\RdapIpResponse;
+use Metaregistrar\RDAP\Responses\RdapResponse;
+
+use Metaregistrar\RDAP\RdapException;
+use Metaregistrar\RDAP\Rdap as BaseRdapClient;
+	
+	
+class Rdap // extends BaseRdapClient
+{
+  
     public const ASN    = 'asn';
     public const IPV4   = 'ipv4';
     public const IPV6   = 'ipv6';
@@ -17,7 +26,7 @@ class Rdap extends BaseRdapClient {
     public const DOMAIN = 'domain';
     public const SEARCH = 'search';
     public const HOME   = 'home'; 
-*/
+ 
   
     public const OID = 'oid';
   /*
@@ -92,7 +101,47 @@ class Rdap extends BaseRdapClient {
         }
         $this->protocol = $protocol;
     }
+    /**
+     * @return string
+     */
+    public function getPublicationdate(): string {
+        return $this->publicationdate;
+    }
 
+    /**
+     * @param string $publicationdate
+     */
+    public function setPublicationdate(string $publicationdate): void {
+        $this->publicationdate = $publicationdate;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVersion(): string {
+        return $this->version;
+    }
+
+    /**
+     * @param string $version
+     */
+    public function setVersion(string $version): void {
+        $this->version = $version;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription(): string {
+        return $this->description;
+    }
+
+    /**
+     * @param string $description
+     */
+    public function setDescription(string $description): void {
+        $this->description = $description;
+    }
 
     /**
      *
@@ -124,6 +173,8 @@ class Rdap extends BaseRdapClient {
         $services  = $this->readRoot();
 
         foreach ($services as $service) {
+			
+						
             foreach ($service[0] as $number) {
                 // ip address range match
                 if (strpos($number, '-') > 0) {
@@ -141,7 +192,7 @@ class Rdap extends BaseRdapClient {
                     // exact match
                     if ($number === $parameter) {
                         // check for slash as last character in the server name, if not, add it
-                        if ($service[1][0]{strlen($service[1][0]) - 1} !== '/') {
+                        if ($service[1][0][strlen($service[1][0]) - 1] !== '/') {
                             $service[1][0] .= '/';
                         }
 
