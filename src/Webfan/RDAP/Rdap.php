@@ -22,11 +22,20 @@ class Rdap extends BaseRdapClient {
 */
   
     public const OID = 'oid';
+  
+    public const WEID = 'weid';
     public const PEN = 'iana-pen';
     public const CARA = 'cara';
+    public const RA = 'ra';
     public const SERVICE = 'service';
     public const NODE = 'node';
+    public const WEBFINGER = 'webfinger';
     public const HANDLE = '@';
+  
+   public const UNBOUND = 'unbound';
+   public const MULTI = 'multi';
+  
+   public const CONNECT = 'oid-connect';
   
     protected static $protocols = [
         'ipv4'   => [self::HOME => 'https://data.iana.org/rdap/ipv4.json', self::SEARCH => 'ip/'],
@@ -34,12 +43,32 @@ class Rdap extends BaseRdapClient {
         'ns'     => [self::HOME => 'https://data.iana.org/rdap/dns.json', self::SEARCH => 'nameserver/'],
         'ipv6'   => [self::HOME => 'https://data.iana.org/rdap/ipv6.json', self::SEARCH => 'ip/'],
         'asn'    => [self::HOME => 'https://data.iana.org/rdap/asn.json', self::SEARCH => 'autnum/'],
+
+  
         'oid'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'oid/'],
+         //relays?
+        'webfinger'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => '.well-known/webfinger?resource='],
+        '@'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => '@'],
+  
+        'oid-ip'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'oid-ip/'],
+        'oid-connect'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'oid-connect/@'],
+  
+        'weid'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'weid/'],
         'iana-pen'    => [self::HOME => 'https://iana-pen.oid.zone/rdap/data/iana-pen.json', self::SEARCH => 'iana-pen/'],
         'cara'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'cara/'],
-        'service'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'service/'],
-        'node'    => [self::HOME => 'https://iana-pen.oid.zone/rdap/data/oid.json', self::SEARCH => 'node/'],
-        '@'    => [self::HOME => 'https://iana-pen.oid.zone/rdap/data/oid.json', self::SEARCH => '.well-known/webfinger?resource=']
+        'ra'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'ra/'],
+
+  
+        'service'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'service/provider/'],
+        'container'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'service/container/'],
+        'install'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'service/install/'],
+        'ext'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'service/ext/'],
+  
+        'node'    => [self::HOME => 'https://iana-pen.oid.zone/rdap/data/oid.json', self::SEARCH => 'node/'],  
+  
+        'relay'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'relay/provider/'],
+        'unbound'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'relay/unbound/'],
+        'multi'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'relay/multi/']
     ];
 
     private $protocol;
@@ -79,6 +108,7 @@ class Rdap extends BaseRdapClient {
         }
 
         $search = trim($search);
+      /*
         if ($this->getProtocol() !== self::ASN && (!is_string($search)) && in_array($this->getProtocol(), [
               self::DOMAIN, self::NS, self::IPV4, self::IPV6, self::OID, self::PEN,
               self::CARA, self::SERVICE, self::NODE, self::HANDLE
@@ -89,7 +119,7 @@ class Rdap extends BaseRdapClient {
         if ((!is_numeric($search)) && ($this->getProtocol() === self::ASN)) {
             throw new RdapException('Search parameter must be a number or a string with numeric info for asn searches');
         }
-
+*/
         $parameter = $this->prepareSearch($search);
         $services  = $this->readRoot();
 
