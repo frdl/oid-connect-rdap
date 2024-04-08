@@ -2,18 +2,13 @@
 
 namespace Webfan\RDAP;
 
+
+use Metaregistrar\RDAP\RdapException;
+//use Metaregistrar\RDAP\Rdap as BaseRdapClient;
 use Metaregistrar\RDAP\Responses\RdapAsnResponse;
 use Metaregistrar\RDAP\Responses\RdapIpResponse;
 use Metaregistrar\RDAP\Responses\RdapResponse;
 
-use Metaregistrar\RDAP\RdapException;
-use Metaregistrar\RDAP\Rdap as BaseRdapClient;
-use Metaregistrar\RDAP\Responses\RdapAsnResponse;
-use Metaregistrar\RDAP\Responses\RdapIpResponse;
-use Metaregistrar\RDAP\Responses\RdapResponse;
-
-use Metaregistrar\RDAP\RdapException;
-use Metaregistrar\RDAP\Rdap as BaseRdapClient;
 	
 	
 class Rdap // extends BaseRdapClient
