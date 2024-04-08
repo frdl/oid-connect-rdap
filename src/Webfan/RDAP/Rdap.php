@@ -20,7 +20,7 @@ class Rdap extends BaseRdapClient {
 */
   
     public const OID = 'oid';
-  
+  /*
     public const WEID = 'weid';
     public const PEN = 'iana-pen';
     public const CARA = 'cara';
@@ -34,7 +34,7 @@ class Rdap extends BaseRdapClient {
    public const MULTI = 'multi';
   
    public const CONNECT = 'oid-connect';
-  
+  */
     protected static $protocols = [
         'ipv4'   => [self::HOME => 'https://data.iana.org/rdap/ipv4.json', self::SEARCH => 'ip/'],
         'domain' => [self::HOME => 'https://data.iana.org/rdap/dns.json', self::SEARCH => 'domain/'],
@@ -44,6 +44,7 @@ class Rdap extends BaseRdapClient {
 
   
         'oid'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'oid/'],
+  /*
          //relays?
         'webfinger'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => '.well-known/webfinger?resource='],
         '@'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => '@'],
@@ -67,6 +68,7 @@ class Rdap extends BaseRdapClient {
         'relay'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'relay/provider/'],
         'unbound'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'relay/unbound/'],
         'multi'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'relay/multi/']
+        */
     ];
 
     private $protocol;
