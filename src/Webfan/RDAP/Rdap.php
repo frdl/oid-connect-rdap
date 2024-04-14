@@ -1,4 +1,5 @@
-<?php declare(strict_types=1);
+<?php 
+declare(strict_types=1);
 
 namespace Webfan\RDAP;
 
@@ -40,6 +41,9 @@ class Rdap // extends BaseRdapClient
   
    public const CONNECT = 'oid-connect';
   */
+
+    public $userAgent = 'RDAPClient/0.1 (Webfan) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/0.0.1';
+	
     protected static $protocols = [
         'ipv4'   => [self::HOME => 'https://data.iana.org/rdap/ipv4.json', self::SEARCH => 'ip/', self::SERVICES => [] ],
         'domain' => [self::HOME => 'https://data.iana.org/rdap/dns.json', self::SEARCH => 'domain/', self::SERVICES => [] ],
@@ -203,19 +207,20 @@ public function siteURL(){
         }
 
 
-	    
-	$ua = strtolower($_SERVER['HTTP_USER_AGENT']);
+	 $userAgent = $this->userAgent;
+	$ua = isset($_SERVER['HTTP_USER_AGENT']) ? strtolower($_SERVER['HTTP_USER_AGENT']) : '';//$userAgent;
         $referer = $this->siteURL();
         $options = array(
            'http'=>array(
               'method'=>"GET",
               'header'=>"Accept-language: en\r\n" 
 		   // ."Cookie: foo=bar\r\n"
-                 . "User-Agent: RDAPClient/0.1 (Webfan) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/0.0.1\r\n"  
+                 . "User-Agent: $userAgent\r\n"  
 		 ."Referer: $referer\r\n"
             )
         );
 
+	   
          $context = stream_context_create($options);
 	    
         $search = trim($search);
@@ -233,7 +238,7 @@ public function siteURL(){
 */
         $parameter = $this->prepareSearch($search);
         $services  = true===$searchLocalOnly ? [] : $this->readRoot();
-
+	
 	foreach($this->readServices($this->protocol) as $s){
           array_push($services, $s);
 	}
@@ -247,7 +252,7 @@ public function siteURL(){
                         if ($service[1][0][strlen($service[1][0]) - 1] !== '/') {
                             $service[1][0] .= '/';
                         }
-		    $rdapServerUrlBase = $service[1][0] . self::$protocols[$this->protocol][self::SEARCH] ;
+		    $rdapServerUrlBase = $service[1][0] . self::$protocols[$this->protocol][self::SEARCH];
 		    $rdapServerUrlForSearch = $rdapServerUrlBase. $search;
 
                    if($skipRefererBounce && isset($_SERVER['HTTP_REFERER'])
@@ -265,36 +270,23 @@ public function siteURL(){
                 if (strpos($number, '-') > 0) {
                     [$start, $end] = explode('-', $number);
                     if (($parameter >= $start) && ($parameter <= $end)) {
-                      
-                        $rdap = @file_get_contents($rdapServerUrlForSearch, false, $context);
-
-                        if($rdap){
-				return $this->createResponse($this->getProtocol(), $rdap);
-			}
+                        $moreServices[$number]= $rdapServerUrlForSearch;	
                     }
                 } elseif ($number === $parameter) {
-                    // exact match
-                     $rdap = @file_get_contents($rdapServerUrlForSearchh, false, $context);
-                     if($rdap){
-                       return $this->createResponse($this->getProtocol(), $rdap);
-		     }
-                  
+			$moreServices[$number]= $rdapServerUrlForSearch;	
                 }elseif($number === substr($search, 0, strlen($number)) ){
-                      $moreServices[$number]= $rdapServerUrlForSearch;
+                      $moreServices[$number]= $rdapServerUrlForSearch;					
 		}
             }//$service[0]
         }//$services
 
          krsort($moreServices);
-         foreach($moreServices as $number => $url){
-                if($number === substr($search, 0, strlen($number)) ){                                      
-		     $rdap = @file_get_contents($url), false, $context);
-                     if($rdap){
-                       return $this->createResponse($this->getProtocol(), $rdap);
-		     }
-		}
-	 }
-	    
+         foreach($moreServices as $number => $url){          			
+		 $rdap = @file_get_contents($url, false, $context);                  
+		 if($rdap){                    
+		    return $this->createResponse($this->getProtocol(), $rdap);				
+		 }		
+	 }	    
         return null;
     }
 
