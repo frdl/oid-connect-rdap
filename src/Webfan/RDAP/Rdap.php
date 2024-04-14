@@ -21,6 +21,7 @@ class Rdap // extends BaseRdapClient
     public const DOMAIN = 'domain';
     public const SEARCH = 'search';
     public const HOME   = 'home'; 
+    public const SERVICES   = 'services'; 
  
   
     public const OID = 'oid';
@@ -40,41 +41,16 @@ class Rdap // extends BaseRdapClient
    public const CONNECT = 'oid-connect';
   */
     protected static $protocols = [
-        'ipv4'   => [self::HOME => 'https://data.iana.org/rdap/ipv4.json', self::SEARCH => 'ip/'],
-        'domain' => [self::HOME => 'https://data.iana.org/rdap/dns.json', self::SEARCH => 'domain/'],
-        'ns'     => [self::HOME => 'https://data.iana.org/rdap/dns.json', self::SEARCH => 'nameserver/'],
-        'ipv6'   => [self::HOME => 'https://data.iana.org/rdap/ipv6.json', self::SEARCH => 'ip/'],
-        'asn'    => [self::HOME => 'https://data.iana.org/rdap/asn.json', self::SEARCH => 'autnum/'],
-
-  
-        'oid'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'oid/'],
-  /*
-         //relays?
-        'webfinger'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => '.well-known/webfinger?resource='],
-        '@'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => '@'],
-  
-        'oid-ip'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'oid-ip/'],
-        'oid-connect'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'oid-connect/@'],
-  
-        'weid'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'weid/'],
-        'iana-pen'    => [self::HOME => 'https://iana-pen.oid.zone/rdap/data/iana-pen.json', self::SEARCH => 'iana-pen/'],
-        'cara'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'cara/'],
-        'ra'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'ra/'],
-
-  
-        'service'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'service/provider/'],
-        'container'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'service/container/'],
-        'install'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'service/install/'],
-        'ext'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'service/ext/'],
-  
-        'node'    => [self::HOME => 'https://iana-pen.oid.zone/rdap/data/oid.json', self::SEARCH => 'node/'],  
-  
-        'relay'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'relay/provider/'],
-        'unbound'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'relay/unbound/'],
-        'multi'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'relay/multi/']
-        */
+        'ipv4'   => [self::HOME => 'https://data.iana.org/rdap/ipv4.json', self::SEARCH => 'ip/', self::SERVICES => [] ],
+        'domain' => [self::HOME => 'https://data.iana.org/rdap/dns.json', self::SEARCH => 'domain/', self::SERVICES => [] ],
+        'ns'     => [self::HOME => 'https://data.iana.org/rdap/dns.json', self::SEARCH => 'nameserver/', self::SERVICES => [] ],
+        'ipv6'   => [self::HOME => 'https://data.iana.org/rdap/ipv6.json', self::SEARCH => 'ip/', self::SERVICES => [] ],
+        'asn'    => [self::HOME => 'https://data.iana.org/rdap/asn.json', self::SEARCH => 'autnum/', self::SERVICES => [] ],  
+        'oid'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'oid/', self::SERVICES => [] ],
     ];
-
+	
+ 
+	
     private $protocol;
     private $publicationdate = '';
     private $version         = '';
@@ -96,6 +72,58 @@ class Rdap // extends BaseRdapClient
         }
         $this->protocol = $protocol;
     }
+
+    public function addService(string $protocol, string | array $servers) : self {
+        if (!isset(self::$protocols[$protocol])) {
+            throw new RdapException('Protocol ' . $protocol . ' is not recognized by this rdap client implementation');
+        }	    
+        self::$protocols[$protocol][self::SERVICES][] = $servers;
+	    
+        return $this;
+    }
+
+
+    public function readServices(?string $protocol = null): array {
+	if(!is_string($protocol)){
+           $protocol = $this->protocol;
+	}
+        $services = [];
+	$servers =  self::$protocols[$protocol][self::SERVICES];  
+	foreach($servers as $s){
+           if(is_string($s)){
+             $as = @file_get_contents($s);
+	     $s = false === $as ? [] : json_decode($as, false);	   
+	     $s=(array)$s;
+	     if(isset($s['services'])){
+               $s=$s['services'];
+	     }
+	   } 		
+	  foreach($s as $_s){
+              array_push($services, $_s);
+	   }
+	}
+     return $services;
+    }
+
+	
+    /**
+     * @return array
+     */
+    public function readRoot(?string $protocol = null): array {
+	if(!is_string($protocol)){
+           $protocol = $this->protocol;
+	}
+        $rdap = file_get_contents(self::$protocols[$protocol][self::HOME]);
+        $json = json_decode($rdap, false);
+        $this->setDescription($json->description);
+        $this->setPublicationdate($json->publication);
+        $this->setVersion($json->version);
+
+        return $json->services;
+    }
+
+
+	
     /**
      * @return string
      */
@@ -137,7 +165,30 @@ class Rdap // extends BaseRdapClient
     public function setDescription(string $description): void {
         $this->description = $description;
     }
+   
+	
+public function siteURL(){
+    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+    $domainName = $_SERVER['HTTP_HOST'].'/';
+    return $protocol.$domainName. $_SERVER['REQUEST_URI'];
+}
 
+
+   public function rdap(string $search): ?RdapResponse {
+	  $skipRefererBounce = true;   
+	  $searchLocalOnly = false;	
+	if($_SERVER['SERVER_ADDR'] === $_SERVER['REMOTE_ADDR'] || $_SERVER['SERVER_ADDR'] ===  $_SERVER['HTTP_X_FORWARDED_FOR']  || $_SERVER['SERVER_ADDR'] ===  $_SERVER['HTTP_CLIENT_IP'] ){
+          $skipRefererBounce = true;
+	  $searchLocalOnly = isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER']=== $this->siteURL();	
+	}
+     return $this->searchServers($search, $searchLocalOnly,$skipRefererBounce);
+   }
+
+   public function search(string $search, ?bool $searchLocalOnly = false, ?bool $skipRefererBounce = true): ?RdapResponse {
+	  $skipRefererBounce = false;   
+	  $searchLocalOnly = false;	
+     return $this->searchServers($search, $searchLocalOnly,$skipRefererBounce);
+   }
     /**
      *
      *
@@ -146,11 +197,27 @@ class Rdap // extends BaseRdapClient
      * @return \Metaregistrar\RDAP\Responses\RdapAsnResponse|\Metaregistrar\RDAP\Responses\RdapIpResponse|\Metaregistrar\RDAP\Responses\RdapResponse|null
      * @throws \Metaregistrar\RDAP\RdapException
      */
-    public function search(string $search): ?RdapResponse {
+    public function searchServers(string $search, ?bool $searchLocalOnly = false, ?bool $skipRefererBounce = true): ?RdapResponse {
         if (!isset($search) || ($search === '')) {
             throw new RdapException('Search parameter may not be empty');
         }
 
+
+	    
+	$ua = strtolower($_SERVER['HTTP_USER_AGENT']);
+        $referer = $this->siteURL();
+        $options = array(
+           'http'=>array(
+              'method'=>"GET",
+              'header'=>"Accept-language: en\r\n" 
+		   // ."Cookie: foo=bar\r\n"
+                 . "User-Agent: RDAPClient/0.1 (Webfan) AppleWebKit/531.21.10 (KHTML, like Gecko) Version/0.0.1\r\n"  
+		 ."Referer: $referer\r\n"
+            )
+        );
+
+         $context = stream_context_create($options);
+	    
         $search = trim($search);
       /*
         if ($this->getProtocol() !== self::ASN && (!is_string($search)) && in_array($this->getProtocol(), [
@@ -165,40 +232,69 @@ class Rdap // extends BaseRdapClient
         }
 */
         $parameter = $this->prepareSearch($search);
-        $services  = $this->readRoot();
+        $services  = true===$searchLocalOnly ? [] : $this->readRoot();
 
+	foreach($this->readServices($this->protocol) as $s){
+          array_push($services, $s);
+	}
+
+        $moreServices = [];
+	    
         foreach ($services as $service) {
-			
-						
-            foreach ($service[0] as $number) {
-                // ip address range match
+									
+            foreach ($service[0] as $number) { 
+		    // check for slash as last character in the server name, if not, add it
+                        if ($service[1][0][strlen($service[1][0]) - 1] !== '/') {
+                            $service[1][0] .= '/';
+                        }
+		    $rdapServerUrlBase = $service[1][0] . self::$protocols[$this->protocol][self::SEARCH] ;
+		    $rdapServerUrlForSearch = $rdapServerUrlBase. $search;
+
+                   if($skipRefererBounce && isset($_SERVER['HTTP_REFERER'])
+		      && ($_SERVER['HTTP_REFERER']=== $this->siteURL() 
+			  || $_SERVER['HTTP_REFERER']===$rdapServerUrlBase
+			  || $_SERVER['HTTP_REFERER']===$rdapServerUrlForSearch 
+			  || str_contains($ua, 'rdap')
+			  || str_contains($ua, 'webfan')
+			  || str_contains($ua, 'frdlweb')
+			 )
+		     ){
+		     continue;
+		   }
+      
                 if (strpos($number, '-') > 0) {
                     [$start, $end] = explode('-', $number);
                     if (($parameter >= $start) && ($parameter <= $end)) {
-                        // check for slash as last character in the server name, if not, add it
-                        if ($service[1][0][strlen($service[1][0]) - 1] !== '/') {
-                            $service[1][0] .= '/';
-                        }
-                        $rdap = file_get_contents($service[1][0] . self::$protocols[$this->protocol][self::SEARCH] . $search);
+                      
+                        $rdap = @file_get_contents($rdapServerUrlForSearch, false, $context);
 
-                        return $this->createResponse($this->getProtocol(), $rdap);
+                        if($rdap){
+				return $this->createResponse($this->getProtocol(), $rdap);
+			}
                     }
-                } else {
+                } elseif ($number === $parameter) {
                     // exact match
-                    if ($number === $parameter) {
-                        // check for slash as last character in the server name, if not, add it
-                        if ($service[1][0][strlen($service[1][0]) - 1] !== '/') {
-                            $service[1][0] .= '/';
-                        }
+                     $rdap = @file_get_contents($rdapServerUrlForSearchh, false, $context);
+                     if($rdap){
+                       return $this->createResponse($this->getProtocol(), $rdap);
+		     }
+                  
+                }elseif($number === substr($search, 0, strlen($number)) ){
+                      $moreServices[$number]= $rdapServerUrlForSearch;
+		}
+            }//$service[0]
+        }//$services
 
-                        $rdap = file_get_contents($service[1][0] . self::$protocols[$this->protocol][self::SEARCH] . $search);
-
-                        return $this->createResponse($this->getProtocol(), $rdap);
-                    }
-                }
-            }
-        }
-
+         krsort($moreServices);
+         foreach($moreServices as $number => $url){
+                if($number === substr($search, 0, strlen($number)) ){                                      
+		     $rdap = @file_get_contents($url), false, $context);
+                     if($rdap){
+                       return $this->createResponse($this->getProtocol(), $rdap);
+		     }
+		}
+	 }
+	    
         return null;
     }
 
@@ -224,18 +320,6 @@ class Rdap // extends BaseRdapClient
         }
     }
 
-    /**
-     * @return array
-     */
-    private function readRoot(): array {
-        $rdap = file_get_contents(self::$protocols[$this->protocol][self::HOME]);
-        $json = json_decode($rdap, false);
-        $this->setDescription($json->description);
-        $this->setPublicationdate($json->publication);
-        $this->setVersion($json->version);
-
-        return $json->services;
-    }
 
     /**
      *
