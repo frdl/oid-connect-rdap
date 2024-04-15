@@ -341,8 +341,8 @@ public function siteURL(){
      * @throws \Metaregistrar\RDAP\RdapException
      */
     protected function createResponse(string $protocol, string $json) {
-		//return json_decode($json);
-	 
+	 	return json_decode($json);
+	 /*
         switch ($protocol) {
             case self::IPV4:
                 return new RdapIpResponse($json);
@@ -353,6 +353,7 @@ public function siteURL(){
             default:
                 return new RdapResponse($json);
         }
+		*/
     }
 
     public function case(): void {
