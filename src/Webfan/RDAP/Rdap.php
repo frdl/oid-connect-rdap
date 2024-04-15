@@ -125,6 +125,7 @@ class Rdap // extends BaseRdapClient
 	if(!is_string($protocol)){
            $protocol = $this->protocol;
 	}
+		
         $rdap = file_get_contents(self::$protocols[$protocol][self::HOME]);
         $json = json_decode($rdap, false);
         $this->setDescription($json->description);
@@ -186,7 +187,7 @@ public function siteURL(){
 }
 
 
-   public function rdap(string $search): ?RdapResponse {
+   public function rdap(string $search)  {
 	  $skipRefererBounce = true;   
 	  $searchLocalOnly = false;	
 	if($_SERVER['SERVER_ADDR'] === $_SERVER['REMOTE_ADDR'] 
@@ -198,7 +199,7 @@ public function siteURL(){
      return $this->searchServers($search, $searchLocalOnly,$skipRefererBounce);
    }
 
-   public function search(string $search, ?bool $searchLocalOnly = false, ?bool $skipRefererBounce = true): ?RdapResponse {
+   public function search(string $search, ?bool $searchLocalOnly = false, ?bool $skipRefererBounce = true){
 	  $skipRefererBounce = false;   
 	  $searchLocalOnly = false;	
      return $this->searchServers($search, $searchLocalOnly,$skipRefererBounce);
@@ -211,7 +212,7 @@ public function siteURL(){
      * @return \Metaregistrar\RDAP\Responses\RdapAsnResponse|\Metaregistrar\RDAP\Responses\RdapIpResponse|\Metaregistrar\RDAP\Responses\RdapResponse|null
      * @throws \Metaregistrar\RDAP\RdapException
      */
-    public function searchServers(string $search, ?bool $searchLocalOnly = false, ?bool $skipRefererBounce = true): ?RdapResponse {
+    public function searchServers(string $search, ?bool $searchLocalOnly = false, ?bool $skipRefererBounce = true)  {
         if (!isset($search) || ($search === '')) {
             throw new RdapException('Search parameter may not be empty');
         }
@@ -253,6 +254,8 @@ public function siteURL(){
           array_push($services, $s);
 	}
 
+		
+		
         $moreServices = [];
 	    
         foreach ($services as $service) {
@@ -274,9 +277,13 @@ public function siteURL(){
 			  || str_contains($ua, 'frdlweb')
 			 )
 		     ){
+					   
 		     continue;
 		   }
       
+				
+		
+				
                 if (strpos($number, '-') > 0) {
                     [$start, $end] = explode('-', $number);
                     if (($parameter >= $start) && ($parameter <= $end)) {
@@ -292,8 +299,9 @@ public function siteURL(){
 
          krsort($moreServices);
          foreach($moreServices as $number => $url){          			
-		 $rdap = @file_get_contents($url, false, $context);                  
-		 if($rdap){                    
+		 $rdap = @file_get_contents($url, false, $context); 
+			 
+		 if($rdap){                   
 		    return $this->createResponse($this->getProtocol(), $rdap);				
 		 }		
 	 }	    
@@ -332,14 +340,16 @@ public function siteURL(){
      * @return \Metaregistrar\RDAP\Responses\RdapResponse
      * @throws \Metaregistrar\RDAP\RdapException
      */
-    protected function createResponse(string $protocol, string $json): RdapResponse {
+    protected function createResponse(string $protocol, string $json) {
+		//return json_decode($json);
+	 
         switch ($protocol) {
             case self::IPV4:
                 return new RdapIpResponse($json);
             case self::ASN:
                 return new RdapAsnResponse($json);
-			case self::OID:
-				return new RdapOIDResponse($json);
+		 	case self::OID:
+	    		return new RdapOIDResponse($json);
             default:
                 return new RdapResponse($json);
         }
