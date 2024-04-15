@@ -15,7 +15,8 @@ use Metaregistrar\RDAP\Data\RdapSecureDNS;
 use Metaregistrar\RDAP\Data\RdapStatus;
 use Metaregistrar\RDAP\RdapException;
 
-class RdapOIDResponse extends BaseRdapResponse {
+class RdapOIDResponse//extends BaseRdapResponse
+{
     /**
      * @var string|null
      */
@@ -112,6 +113,124 @@ class RdapOIDResponse extends BaseRdapResponse {
     }
 
    
+    /**
+     * @return string
+     */
+     public function getHandle(): string {
+        return $this->handle;
+    }
+
+    /**
+     * @return RdapConformance[]|null
+     */
+     public function getConformance(): ?array {
+        return $this->rdapConformance;
+    }
+
+    /**
+     * @return string
+     */
+     public function getName(): string {
+        return $this->name;
+    }
+
+    /**
+     * @return string
+     */
+     public function getType(): string {
+        return $this->type;
+    }
+
+    /**
+     * @return RdapEntity[]|null
+     */
+     public function getEntities(): ?array {
+        return $this->entities;
+    }
+
+    /**
+     * @return RdapLink[]|null
+     */
+     public function getLinks(): ?array {
+        return $this->links;
+    }
+
+    /**
+     * @return RdapRemark[]|null
+     */
+     public function getRemarks(): ?array {
+        return $this->remarks;
+    }
+
+    /**
+     * @return RdapNotice[]|null
+     */
+     public function getNotices(): ?array {
+        return $this->notices;
+    }
+
+    /**
+     * @return string|null
+     */
+     public function getPort43(): ?string {
+        return $this->port43;
+    }
+
+    /**
+     * @return RdapNameserver[]|null
+     */
+     public function getNameservers(): ?array {
+        return $this->nameservers;
+    }
+
+    /**
+     * @return RdapStatus[]|null
+     */
+     public function getStatus(): ?array {
+        return $this->status;
+    }
+
+    /**
+     * @return RdapEvent[]|null
+     */
+     public function getEvents(): ?array {
+        return $this->events;
+    }
+
+    /**
+     * @return string|null
+     */
+     public function getClassname(): ?string {
+        return $this->objectClassName;
+    }
+
+    /**
+     * @return string|null
+     */
+     public function getLDHName(): ?string {
+        return $this->ldhName;
+    }
+
+    /**
+     * @return RdapSecureDNS[]|null
+     */
+     public function getSecureDNS(): ?array {
+        return $this->secureDNS;
+    }
+
+    /**
+     * @return int|null
+     */
+     public function getErrorCode(): ?int {
+        return $this->errorCode;
+    }
+
+    /**
+     * @return string|null
+     */
+     public function getTitle(): ?string {
+        return $this->title;
+    }
 
 }
 
