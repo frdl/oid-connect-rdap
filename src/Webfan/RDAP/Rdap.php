@@ -1,15 +1,23 @@
 <?php 
 declare(strict_types=1);
 
-namespace Webfan\RDAP;
+namespace Webfan\RDAP{
 
 
 use Metaregistrar\RDAP\RdapException;
 //use Metaregistrar\RDAP\Rdap as BaseRdapClient;
 use Metaregistrar\RDAP\Responses\RdapAsnResponse;
 use Metaregistrar\RDAP\Responses\RdapIpResponse;
+use Webfan\RDAP\Response\RdapOIDResponse;
 use Metaregistrar\RDAP\Responses\RdapResponse;
-
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 class Rdap // extends BaseRdapClient
@@ -181,7 +189,9 @@ public function siteURL(){
    public function rdap(string $search): ?RdapResponse {
 	  $skipRefererBounce = true;   
 	  $searchLocalOnly = false;	
-	if($_SERVER['SERVER_ADDR'] === $_SERVER['REMOTE_ADDR'] || $_SERVER['SERVER_ADDR'] ===  $_SERVER['HTTP_X_FORWARDED_FOR']  || $_SERVER['SERVER_ADDR'] ===  $_SERVER['HTTP_CLIENT_IP'] ){
+	if($_SERVER['SERVER_ADDR'] === $_SERVER['REMOTE_ADDR'] 
+	   || (isset( $_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['SERVER_ADDR'] ===  $_SERVER['HTTP_X_FORWARDED_FOR'] )
+	   || (isset( $_SERVER['HTTP_CLIENT_IP']) && $_SERVER['SERVER_ADDR'] ===  $_SERVER['HTTP_CLIENT_IP'] )){
           $skipRefererBounce = true;
 	  $searchLocalOnly = isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER']=== $this->siteURL();	
 	}
@@ -316,7 +326,7 @@ public function siteURL(){
     /**
      *
      *
-     * @param string $protocol
+     * @param string $protocol  RdapOIDResponse
      * @param string $json
      *
      * @return \Metaregistrar\RDAP\Responses\RdapResponse
@@ -328,6 +338,8 @@ public function siteURL(){
                 return new RdapIpResponse($json);
             case self::ASN:
                 return new RdapAsnResponse($json);
+			case self::OID:
+				return new RdapOIDResponse($json);
             default:
                 return new RdapResponse($json);
         }
@@ -336,3 +348,5 @@ public function siteURL(){
     public function case(): void {
     }
 }
+	
+}//ns
