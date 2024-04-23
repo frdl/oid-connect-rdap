@@ -3,7 +3,6 @@ declare(strict_types=1);
 
 namespace Webfan\RDAP{
 
-
 use Metaregistrar\RDAP\RdapException;
 //use Metaregistrar\RDAP\Rdap as BaseRdapClient;
 use Metaregistrar\RDAP\Responses\RdapAsnResponse;
@@ -11,14 +10,7 @@ use Metaregistrar\RDAP\Responses\RdapIpResponse;
 use Webfan\RDAP\Response\RdapOIDResponse;
 use Metaregistrar\RDAP\Responses\RdapResponse;
 	
-	
-	
-	
-	
-	
-	
-	
-	
+
 	
 class Rdap // extends BaseRdapClient
 {
@@ -187,7 +179,7 @@ public function siteURL(){
 }
 
 
-   public function rdap(string $search)  {
+   public function rdap(string $search, ?bool $raw = false)  {
 	  $skipRefererBounce = true;   
 	  $searchLocalOnly = false;	
 	if($_SERVER['SERVER_ADDR'] === $_SERVER['REMOTE_ADDR'] 
@@ -196,13 +188,13 @@ public function siteURL(){
           $skipRefererBounce = true;
 	  $searchLocalOnly = isset($_SERVER['HTTP_REFERER']) && $_SERVER['HTTP_REFERER']=== $this->siteURL();	
 	}
-     return $this->searchServers($search, $searchLocalOnly,$skipRefererBounce);
+     return $this->searchServers($search, $searchLocalOnly,$skipRefererBounce, $raw);
    }
 
-   public function search(string $search, ?bool $searchLocalOnly = false, ?bool $skipRefererBounce = true){
+   public function search(string $search, ?bool $searchLocalOnly = false, ?bool $skipRefererBounce = true, ?bool $raw = true){
 	  $skipRefererBounce = false;   
 	  $searchLocalOnly = false;	
-     return $this->searchServers($search, $searchLocalOnly,$skipRefererBounce);
+     return $this->searchServers($search, $searchLocalOnly,$skipRefererBounce, $raw);
    }
     /**
      *
@@ -212,7 +204,7 @@ public function siteURL(){
      * @return \Metaregistrar\RDAP\Responses\RdapAsnResponse|\Metaregistrar\RDAP\Responses\RdapIpResponse|\Metaregistrar\RDAP\Responses\RdapResponse|null
      * @throws \Metaregistrar\RDAP\RdapException
      */
-    public function searchServers(string $search, ?bool $searchLocalOnly = false, ?bool $skipRefererBounce = true)  {
+    public function searchServers(string $search, ?bool $searchLocalOnly = false, ?bool $skipRefererBounce = true, ?bool $raw = true)  {
         if (!isset($search) || ($search === '')) {
             throw new RdapException('Search parameter may not be empty');
         }
@@ -253,9 +245,7 @@ public function siteURL(){
 	foreach($this->readServices($this->protocol) as $s){
           array_push($services, $s);
 	}
-
-		
-		
+ 		
         $moreServices = [];
 	    
         foreach ($services as $service) {
@@ -301,7 +291,9 @@ public function siteURL(){
          foreach($moreServices as $number => $url){          			
 		 $rdap = @file_get_contents($url, false, $context); 
 			 
-		 if($rdap){                   
+		  if($rdap && $raw){                   
+		    return $rdap;				
+		 }elseif($rdap && !$raw){                   
 		    return $this->createResponse($this->getProtocol(), $rdap);				
 		 }		
 	 }	    
