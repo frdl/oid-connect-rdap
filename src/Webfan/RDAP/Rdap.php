@@ -133,8 +133,41 @@ class Rdap // extends BaseRdapClient
 	foreach($this->readServices($protocol) as $s){
           array_push($json->services, $s);
 	}       
+
+	   $json->services = array_values( $this->add_services($json->services,[]) ); 
+	    
        return (array)$json;
     }	
+
+	protected function add_services(array $services, ?array $out = []) : array {
+	    foreach($services as $instance){
+		        $url =  $instance[1][0];
+			if(!isset($out[$url])){
+				$out[$url] = [];
+			}
+			if(!isset($out[$url][0])){
+				$out[$url][0] = [];
+			}		
+			if(!isset($out[$url][1])){
+				$out[$url][1] = [];
+			}	
+			
+			if (!in_array($url, $out[$url][1])) {   
+                             $out[$url][1][]=$url;
+			}  
+
+		      foreach($instance[0] as $prefix){
+			if (!in_array($prefix, $out[$url][0])) {   
+                            $out[$url][0][]=$prefix;
+			}      
+		      }
+		}		
+		return $out;
+	}
+	
+ 
+
+	
     /**
      * @return array
      */
@@ -289,7 +322,10 @@ public function siteURL(){
 	foreach($this->readServices($this->protocol) as $s){
           array_push($services, $s);
 	}
- 		
+
+          $services = array_values( $this->add_services($services,[]) ); 
+
+	    
         $moreServices = [];
 	    
         foreach ($services as $service) {
