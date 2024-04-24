@@ -109,7 +109,25 @@ class Rdap // extends BaseRdapClient
      return $services;
     }
 
-	
+    public function dumpServices(?string $protocol = null, ?bool $set = true): array {
+	if(!is_string($protocol)){
+           $protocol = $this->protocol;
+	}
+       // $services = $this->readRoot($this->protocol);
+	 $rdap = file_get_contents(self::$protocols[$protocol][self::HOME]);
+         $json = json_decode($rdap, false);
+
+     if($set){
+        $this->setDescription($json->description);
+        $this->setPublicationdate($json->publication);
+        $this->setVersion($json->version);
+     }
+	    
+	foreach($this->readServices($protocol) as $s){
+          array_push($json->services, $s);
+	}       
+       return $json;
+    }	
     /**
      * @return array
      */
@@ -240,7 +258,7 @@ public function siteURL(){
         }
 */
         $parameter = $this->prepareSearch($search);
-        $services  = true===$searchLocalOnly ? [] : $this->readRoot();
+        $services  = true===$searchLocalOnly ? [] : $this->readRoot($this->protocol);
 	
 	foreach($this->readServices($this->protocol) as $s){
           array_push($services, $s);
@@ -279,7 +297,7 @@ public function siteURL(){
                     if (($parameter >= $start) && ($parameter <= $end)) {
                         $moreServices[$number]= $rdapServerUrlForSearch;	
                     }
-                } elseif ($number === $parameter) {
+                } elseif ($number === $parameter || str_contains($parameter, $number) || str_contains($search, $number) ) {
 			$moreServices[$number]= $rdapServerUrlForSearch;	
                 }elseif($number === substr($search, 0, strlen($number)) ){
                       $moreServices[$number]= $rdapServerUrlForSearch;					
