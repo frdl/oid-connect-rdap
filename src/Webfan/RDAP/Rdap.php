@@ -22,6 +22,7 @@ class Rdap // extends BaseRdapClient
     public const DOMAIN = 'domain';
     public const SEARCH = 'search';
     public const HOME   = 'home'; 
+    public const EMPTY   = 'empty'; 
     public const SERVICES   = 'services'; 
  
   
@@ -50,7 +51,9 @@ class Rdap // extends BaseRdapClient
         'ns'     => [self::HOME => 'https://data.iana.org/rdap/dns.json', self::SEARCH => 'nameserver/', self::SERVICES => [] ],
         'ipv6'   => [self::HOME => 'https://data.iana.org/rdap/ipv6.json', self::SEARCH => 'ip/', self::SERVICES => [] ],
         'asn'    => [self::HOME => 'https://data.iana.org/rdap/asn.json', self::SEARCH => 'autnum/', self::SERVICES => [] ],  
-        'oid'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'oid/', self::SERVICES => [] ],
+        'oid'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'oid/', self::SERVICES => [],
+	              self::EMPTY => 'https://oid.zone/rdap/data/oid.empty.json',
+	            ],
     ];
 	
  
@@ -109,15 +112,19 @@ class Rdap // extends BaseRdapClient
      return $services;
     }
 
-    public function dumpServices(?string $protocol = null, ?bool $set = false): array {
+    public function dumpServices(?string $protocol = null, ?bool $withRootServerBootstrap = true, ?bool $set = true): array {
 	if(!is_string($protocol)){
            $protocol = $this->protocol;
 	}
-       // $services = $this->readRoot($this->protocol);
-	 $rdap = file_get_contents(self::$protocols[$protocol][self::HOME]);
+        $rdap = file_get_contents(false === $withRootServerBootstrap && isset(self::$protocols[$protocol][self::EMPTY])
+				   ? self::$protocols[$protocol][self::EMPTY]
+				   : self::$protocols[$protocol][self::HOME]);
          $json = json_decode($rdap, false);
 
-     if($set){
+	    
+     if($set){	   
+	$date = new \DateTimeImmutable();
+	$json->publication = $date->format('c');	     
         $this->setDescription($json->description);
         $this->setPublicationdate($json->publication);
         $this->setVersion($json->version);
@@ -145,7 +152,26 @@ class Rdap // extends BaseRdapClient
         return $json->services;
     }
 
+    public function readEmptyRoot(?string $protocol = null): array {
+	if(!is_string($protocol)){
+           $protocol = $this->protocol;
+	}
+		
+        $rdap = file_get_contents(isset(self::$protocols[$protocol][self::EMPTY])
+				   ? self::$protocols[$protocol][self::EMPTY]
+				   : self::$protocols[$protocol][self::HOME]);
+         $json = json_decode($rdap, false);
+         $json->services = [];
+	    
+	    $date = new \DateTimeImmutable();
+	    $json->publication = $date->format('c');
+	    
+            $this->setDescription($json->description);
+            $this->setPublicationdate($json->publication);
+            $this->setVersion($json->version);
 
+        return $json->services;
+    }
 	
     /**
      * @return string
@@ -258,7 +284,7 @@ public function siteURL(){
         }
 */
         $parameter = $this->prepareSearch($search);
-        $services  = true===$searchLocalOnly ? [] : $this->readRoot($this->protocol);
+        $services  = true===$searchLocalOnly ? $this->readEmptyRoot($this->protocol) : $this->readRoot($this->protocol);
 	
 	foreach($this->readServices($this->protocol) as $s){
           array_push($services, $s);
