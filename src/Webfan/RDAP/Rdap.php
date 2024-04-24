@@ -109,7 +109,7 @@ class Rdap // extends BaseRdapClient
      return $services;
     }
 
-    public function dumpServices(?string $protocol = null, ?bool $set = true): array {
+    public function dumpServices(?string $protocol = null, ?bool $set = false): array {
 	if(!is_string($protocol)){
            $protocol = $this->protocol;
 	}
@@ -126,7 +126,7 @@ class Rdap // extends BaseRdapClient
 	foreach($this->readServices($protocol) as $s){
           array_push($json->services, $s);
 	}       
-       return $json;
+       return (array)$json;
     }	
     /**
      * @return array
