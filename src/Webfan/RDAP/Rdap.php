@@ -142,6 +142,11 @@ class Rdap // extends BaseRdapClient
 	protected function add_services(array $services, ?array $out = []) : array {
 	    foreach($services as $instance){
 		        $url =  $instance[1][0];
+		        $p = parse_url($url);
+		        if(false === $p || !isset($p['host'])){
+                        //  continue;
+				throw new \Exception(sprintf('Invalid url: %s in %s', $url, __METHOD__));
+			}
 			if(!isset($out[$url])){
 				$out[$url] = [];
 			}
