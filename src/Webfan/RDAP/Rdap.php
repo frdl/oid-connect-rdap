@@ -74,16 +74,21 @@ class Rdap // extends BaseRdapClient
     //    if (($protocol !== self::ASN) && ($protocol !== self::IPV4) && ($protocol !== self::IPV6) && ($protocol !== self::DOMAIN)) {
     //        throw new RdapException('Protocol ' . $protocol . ' is not recognized by this rdap client implementation');
     //    }
-        if (!isset(self::$protocols[$protocol])) {
+        if (!self::isValidType($protocol) ) {
             throw new RdapException('Protocol ' . $protocol . ' is not recognized by this rdap client implementation');
         }
         $this->protocol = $protocol;
     }
+	
+    public static function isValidType(string $protocol): bool {
+        return isset(self::$protocols[$protocol] && is_array(self::$protocols[$protocol]) && isset(self::$protocols[$protocol][self::HOME]) );
+    }
 
+	
     public function addService(string $protocol, string | array $servers) : self {
-        if (!isset(self::$protocols[$protocol])) {
+        if (!self::isValidType($protocol) ) {
             throw new RdapException('Protocol ' . $protocol . ' is not recognized by this rdap client implementation');
-        }	    
+        }    
         self::$protocols[$protocol][self::SERVICES][] = $servers;
 	    
         return $this;
@@ -94,6 +99,10 @@ class Rdap // extends BaseRdapClient
 	if(!is_string($protocol)){
            $protocol = $this->protocol;
 	}
+        if (!self::isValidType($protocol) ) {
+            throw new RdapException('Protocol ' . $protocol . ' is not recognized by this rdap client implementation');
+        }
+	    
         $services = [];
 	$servers =  self::$protocols[$protocol][self::SERVICES];  
 	foreach($servers as $s){
@@ -116,6 +125,10 @@ class Rdap // extends BaseRdapClient
 	if(!is_string($protocol)){
            $protocol = $this->protocol;
 	}
+        if (!self::isValidType($protocol) ) {
+            throw new RdapException('Protocol ' . $protocol . ' is not recognized by this rdap client implementation');
+        }
+	    
         $rdap = file_get_contents(false === $withRootServerBootstrap && isset(self::$protocols[$protocol][self::EMPTY])
 				   ? self::$protocols[$protocol][self::EMPTY]
 				   : self::$protocols[$protocol][self::HOME]);
@@ -180,7 +193,11 @@ class Rdap // extends BaseRdapClient
 	if(!is_string($protocol)){
            $protocol = $this->protocol;
 	}
-		
+
+        if (!self::isValidType($protocol) ) {
+            throw new RdapException('Protocol ' . $protocol . ' is not recognized by this rdap client implementation');
+        }
+	    
         $rdap = file_get_contents(self::$protocols[$protocol][self::HOME]);
         $json = json_decode($rdap, false);
         $this->setDescription($json->description);
@@ -293,7 +310,7 @@ public function siteURL(){
 
 
 	 $userAgent = $this->userAgent;
-	$ua = isset($_SERVER['HTTP_USER_AGENT']) ? strtolower($_SERVER['HTTP_USER_AGENT']) : '';//$userAgent;
+	$ua = isset($_SERVER['HTTP_USER_AGENT']) ? strtolower($_SERVER['HTTP_USER_AGENT']) : 'Rdap+OID.ZONE (Webfan/Frdlweb+'.$_SERVER['HTTP_HOST'].')';//$userAgent;
         $referer = $this->siteURL();
         $options = array(
            'http'=>array(
