@@ -81,7 +81,7 @@ class Rdap // extends BaseRdapClient
     }
 	
     public static function isValidType(string $protocol): bool {
-        return isset(self::$protocols[$protocol]) && is_array(self::$protocols[$protocol]) && isset(self::$protocols[$protocol][self::HOME]) );
+        return isset(self::$protocols[$protocol]) && is_array(self::$protocols[$protocol]) && isset(self::$protocols[$protocol][self::HOME]);
     }
 
 	
