@@ -51,8 +51,8 @@ class Rdap // extends BaseRdapClient
         'ns'     => [self::HOME => 'https://data.iana.org/rdap/dns.json', self::SEARCH => 'nameserver/', self::SERVICES => [] ],
         'ipv6'   => [self::HOME => 'https://data.iana.org/rdap/ipv6.json', self::SEARCH => 'ip/', self::SERVICES => [] ],
         'asn'    => [self::HOME => 'https://data.iana.org/rdap/asn.json', self::SEARCH => 'autnum/', self::SERVICES => [] ],  
-        'oid'    => [self::HOME => 'https://oid.zone/rdap/data/oid.json', self::SEARCH => 'oid/', self::SERVICES => [],
-	              self::EMPTY => 'https://oid.zone/rdap/data/oid.empty.json',
+        'oid'    => [self::HOME => 'https://www.oid.zone/rdap/data/oid.json', self::SEARCH => 'oid/', self::SERVICES => [],
+	              self::EMPTY => 'https://www.oid.zone/rdap/data/oid.empty.json',
 	            ],
     ];
 	
