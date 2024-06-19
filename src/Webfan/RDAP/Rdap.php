@@ -129,10 +129,12 @@ class Rdap // extends BaseRdapClient
             throw new RdapException('Protocol ' . $protocol . ' is not recognized by this rdap client implementation');
         }
 	    
-        $rdap = file_get_contents(false === $withRootServerBootstrap && isset(self::$protocols[$protocol][self::EMPTY])
+        $rdap = @file_get_contents(false === $withRootServerBootstrap && isset(self::$protocols[$protocol][self::EMPTY])
 				   ? self::$protocols[$protocol][self::EMPTY]
 				   : self::$protocols[$protocol][self::HOME]);
-         $json = json_decode($rdap, false);
+         $json =is_string($rdap)
+		 ? json_decode($rdap, false)
+		 : new \stdclass;
 
 	    
      if($set){	   
@@ -142,7 +144,9 @@ class Rdap // extends BaseRdapClient
         $this->setPublicationdate($json->publication);
         $this->setVersion($json->version);
      }
-	    
+	if(!isset($json->services)){
+           $json->services = [];
+	}
 	foreach($this->readServices($protocol) as $s){
           array_push($json->services, $s);
 	}       
@@ -199,11 +203,15 @@ class Rdap // extends BaseRdapClient
         }
 	    
         $rdap = file_get_contents(self::$protocols[$protocol][self::HOME]);
-        $json = json_decode($rdap, false);
+                $json =is_string($rdap)
+		 ? json_decode($rdap, false)
+		 : new \stdclass;
         $this->setDescription($json->description);
         $this->setPublicationdate($json->publication);
         $this->setVersion($json->version);
-
+	if(!isset($json->services)){
+           $json->services = [];
+	}
         return $json->services;
     }
 
@@ -212,10 +220,14 @@ class Rdap // extends BaseRdapClient
            $protocol = $this->protocol;
 	}
 		
-        $rdap = file_get_contents(isset(self::$protocols[$protocol][self::EMPTY])
+        $rdap = @file_get_contents(isset(self::$protocols[$protocol][self::EMPTY])
 				   ? self::$protocols[$protocol][self::EMPTY]
 				   : self::$protocols[$protocol][self::HOME]);
-         $json = json_decode($rdap, false);
+                
+	    $json =is_string($rdap)
+		 ? json_decode($rdap, false)
+		 : new \stdclass;
+	    
          $json->services = [];
 	    
 	    $date = new \DateTimeImmutable();
