@@ -202,7 +202,7 @@ class Rdap // extends BaseRdapClient
             throw new RdapException('Protocol ' . $protocol . ' is not recognized by this rdap client implementation');
         }
 	    
-        $rdap = file_get_contents(self::$protocols[$protocol][self::HOME]);
+        $rdap = @file_get_contents(self::$protocols[$protocol][self::HOME]);
                 $json =is_string($rdap)
 		 ? json_decode($rdap, false)
 		 : new \stdclass;
@@ -325,7 +325,8 @@ public function siteURL(){
 	$ua = isset($_SERVER['HTTP_USER_AGENT']) ? strtolower($_SERVER['HTTP_USER_AGENT']) : 'Rdap+OID.ZONE (Webfan/Frdlweb+'.$_SERVER['HTTP_HOST'].')';//$userAgent;
         $referer = $this->siteURL();
         $options = array(
-           'http'=>array(
+           'http'=>array(		
+	      'ignore_errors' => true,
               'method'=>"GET",
               'header'=>"Accept-language: en\r\n" 
 		   // ."Cookie: foo=bar\r\n"
