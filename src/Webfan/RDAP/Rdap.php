@@ -326,7 +326,8 @@ public function siteURL(){
         $referer = $this->siteURL();
         $options = array(
            'http'=>array(		
-	      'ignore_errors' => true,
+	          'ignore_errors' => true,			 
+		   'follow_location' => true,
               'method'=>"GET",
               'header'=>"Accept-language: en\r\n" 
 		   // ."Cookie: foo=bar\r\n"
