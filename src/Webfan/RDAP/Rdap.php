@@ -429,6 +429,7 @@ public function siteURL(){
                 [$start] = explode('.', $string);
 
                 return $start . '.0.0.0/8';
+            case self::OID:
             case self::DOMAIN:
                 $extension = explode('.', $string, 2);
 
